@@ -10,15 +10,15 @@
 ### Suite Components
 
 
-Maestro Workflow Conductor
+1) Maestro Workflow Conductor
 
-Flux
+2) Flux
 
-ddcMD
+3) ddcMD
 
-GridSim2D/Moose
+4) GridSim2D/Moose
 
-DataBroker(DBR)
+5) DataBroker(DBR)
 
 ### Requirement for MuMMI
 
