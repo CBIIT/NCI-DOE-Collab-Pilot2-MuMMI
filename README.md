@@ -2,7 +2,7 @@
 
 ### Description ###
 
-Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling,” implementing the workflow on world-class supercomputing resources. Given the team’s impressive results, it is reasonable to ask whether MuMMI could be applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
+Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources.MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
 
 MuMMI connects biological models of the membrane-protein system on two different scales:
 
