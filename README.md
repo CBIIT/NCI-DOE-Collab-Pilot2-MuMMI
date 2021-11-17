@@ -2,13 +2,13 @@
 
 ### Description ###
 
-Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources.MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
+Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
 
 MuMMI connects biological models of the membrane-protein system on two different scales:
 
 1. A macro model based on the classical approximation theory for liquids in which 300 proteins (Modeled as single-particle beads) move around on a 1x1 &mu;m2 cross section of a perfectly flat (2D) plasma membrane.
 
-2. A micro model that uses Martini coarse-grained (CG) molecular dynamics (MD) simulations to model a 30nm x 30nm “patch” of the macro model that necessarily contains at least one RAS protein
+2. A micro model that uses Martini coarse-grained (CG) molecular dynamics (MD) simulations to model a 30nm x 30nm “patch” of the macro model that necessarily contains at least one RAS protein.
 
 
 ### Software workflow
@@ -63,12 +63,12 @@ The workflow managers manages the state and execution of the framework, includin
 ### Suite Components
 
 
-1) **Maestro Workflow Conductor**: It is a Python-based workflow manager used in MuMMI that is used to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track theCG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend.[GitHub Link](https://github.com/LLNL/maestrowf)
+1) **Maestro Workflow Conductor**: It is a Python-based workflow manager used in MuMMI that is used to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track theCG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. [GitHub Link](https://github.com/LLNL/maestrowf)
 
 2) **Flux**:is the resource manager used for MuMMI that allows the workflow manager to break up the allocated nodes in custom, optimized ways. It is designed to be configured and run directly by the user inside of allocated jobs after they are optimally placed on the nodes by the scheduler. Flux assigns the jobs picked out in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. [GitHub Link](https://flux-framework.github.io/)
 
 3) **ddcMD**: It is LLNL’s own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc. ddcMD is used in by MuMMI in two ways: (1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and (2) a customized GPU
-version of it is used for the micro model CG simulations utilizing the Martini force field.[GitHub Link](https://github/com/LLNL/ddcMD)
+version of it is used for the micro model CG simulations utilizing the Martini force field. [GitHub Link](https://github/com/LLNL/ddcMD)
 
 4) **GridSim2D/Moose**: This is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model, the other part of which is implemented using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. [GitHub Link](??)
 
