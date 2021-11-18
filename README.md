@@ -11,6 +11,10 @@ MuMMI connects biological models of the membrane-protein system on two different
 2. A micro model that uses Martini coarse-grained (CG) molecular dynamics (MD) simulations to model a 30nm x 30nm “patch” of the macro model that necessarily contains at least one RAS protein.
 
 
+
+![MuMMI Overview](Images/mummi_overview.png)
+
+
 ### Software workflow
 
 MuMMI workflow manager (WM)is written in Python and uses a minimum of five nodes to run. The entire workflow is controlled via a configuration file with information on the machine requirement and frequencies of the tasks to be run. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
@@ -68,15 +72,19 @@ The workflow managers manages the state and execution of the framework, includin
 2) **Flux**:is the resource manager used for MuMMI that allows the workflow manager to break up the allocated nodes in custom, optimized ways. It is designed to be configured and run directly by the user inside of allocated jobs after they are optimally placed on the nodes by the scheduler. Flux assigns the jobs picked out in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. [GitHub Link](https://flux-framework.github.io/)
 
 3) **ddcMD**: It is LLNL’s own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc. ddcMD is used in by MuMMI in two ways: (1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and (2) a customized GPU
-version of it is used for the micro model CG simulations utilizing the Martini force field. [GitHub Link](https://github/com/LLNL/ddcMD)
+version of it is used for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
 
 4) **GridSim2D/Moose**: This is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model, the other part of which is implemented using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. [GitHub Link](??)
 
-5) **DataBroker(DBR)**: was investigated for improving data management and I/O operations and allowing fast data storage and retrieval with database-level fault tolerance.
+5) **DataBroker(DBR)**: was investigated for improving data management and I/O operations and allowing fast data storage and retrieval with database-level fault tolerance. [GitHub Link](https://github.com/LLNL/pytaridx)
 
 6) **DynIm** is the dynamic importance sampling software that seems to interface with the MuMMI workflow manager (for running inference). [GitHub Link](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm)
  
 7) **MemSurfer** is an analysis tool that is not used within the MuMMI workflow, is an efficient and versatile tool to compute and analyze membrane surfaces found in a wide variety of large-scale molecular simulations. [GitHub Link](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-MemSurfer)
+
+
+![MuMMI Components](Images/mummi_component_scheme.png)
+
 
 ### Requirement for MuMMI
 
