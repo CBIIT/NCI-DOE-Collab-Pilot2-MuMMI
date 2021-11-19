@@ -120,3 +120,9 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 
 ### Reference:
 Refer to this [article](https://www.researchsquare.com/article/rs-50842/v1)
+
+### License
+
+
+### Authors: 
+<author name or names>
