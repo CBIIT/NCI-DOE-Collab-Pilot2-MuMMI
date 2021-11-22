@@ -118,8 +118,12 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 18) HPO and data augmentation (rotations) on the VAE model to work for the data for the particular biological system
 19 Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
+
+### User Community
+Experienced data scientists, computational scientists, artificial intelligence researchers, clinical researchers, and all researchers dealing with sensitive data assets.
+
 ### Reference:
-Refer to this [article](https://www.researchsquare.com/article/rs-50842/v1)
+Refer to this [publication](https://www.researchsquare.com/article/rs-50842/v1) for more details.
 
 ### License
 
