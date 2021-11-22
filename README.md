@@ -1,6 +1,6 @@
 # NCI-DOE-Collab-Pilot2-MuMMI
 
-### Description ###
+### Description:
 
 Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
 
@@ -15,7 +15,7 @@ MuMMI connects biological models of the membrane-protein system on two different
 ![MuMMI Overview](Images/mummi_overview.png)
 
 
-### Software workflow
+### Software workflow:
 
 MuMMI workflow manager (WM)is written in Python and uses a minimum of five nodes to run. The entire workflow is controlled via a configuration file with information on the machine requirement and frequencies of the tasks to be run. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
 
@@ -64,7 +64,7 @@ The workflow managers manages the state and execution of the framework, includin
     c) The WM uses several checkpoint files to save the current state of the simulation in a coordinated manner, which can be used to restore the simulation,            potentially with different configurations or even on a different machine
 
 
-### Suite Components
+### Suite Components:
 
 
 1) **Maestro Workflow Conductor**: It is a Python-based workflow manager used in MuMMI that is used to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track theCG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. [GitHub Link](https://github.com/LLNL/maestrowf)
@@ -86,7 +86,7 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 ![MuMMI Components](Images/mummi_component_scheme.png)
 
 
-### Requirement for MuMMI
+### Requirement for MuMMI:
 
 1) Initial macro model parameters (from CG training simulations)
   a) Radial distribution functions (RDFs) are taken from analysis of the Martini MD CG force field parameters and converted to free-energy functionals that are      needed for the macro model
@@ -119,13 +119,13 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 19 Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
 
-### User Community
+### User Community:
 Experienced data scientists, computational scientists, artificial intelligence researchers, clinical researchers, and all researchers dealing with sensitive data assets.
 
 ### Reference:
 Refer to this [publication](https://www.researchsquare.com/article/rs-50842/v1) for more details.
 
-### License
+### License:
 
 
 ### Authors: 
