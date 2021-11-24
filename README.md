@@ -6,7 +6,7 @@ Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that
 
 MuMMI connects biological models of the membrane-protein system on two different scales:
 
-1. A macro model based on the classical approximation theory for liquids in which 300 proteins (Modeled as single-particle beads) move around on a 1x1 &mu;m2 cross section of a perfectly flat (2D) plasma membrane.
+1. A macro model based on the classical approximation theory for liquids in which 300 proteins (Modeled as single-particle beads) move around on a 1x1 &mu;m<sup>2</sup> cross section of a perfectly flat (2D) plasma membrane.
 
 2. A micro model that uses Martini coarse-grained (CG) molecular dynamics (MD) simulations to model a 30nm x 30nm “patch” of the macro model that necessarily contains at least one RAS protein.
 
