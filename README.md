@@ -16,7 +16,7 @@ MuMMI connects biological models of the membrane-protein system on two different
 
 ### Software workflow:
 
-MuMMI workflow manager (WM)is written in Python and uses a minimum of five nodes to run. The entire workflow is controlled via a configuration file with information on the machine requirement and frequencies of the tasks to be run. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
+MuMMI workflow manager (WM) is written in Python and uses a minimum of five nodes to run. The entire workflow is controlled via a configuration file with information on the machine requirement and frequencies of the tasks to be run. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
 
 The workflow managers manages the state and execution of the framework, including:
 
@@ -85,7 +85,7 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 ![MuMMI Components](Images/mummi_component_scheme.png)
 
 
-### Requirement for MuMMI:
+### Requirements for MuMMI:
 
 1) Initial macro model parameters (from CG training simulations)
   a) Radial distribution functions (RDFs) are taken from analysis of the Martini MD CG force field parameters and converted to free-energy functionals that are      needed for the macro model
