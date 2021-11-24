@@ -2,14 +2,13 @@
 
 ### Description:
 
-Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI cleverly connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
+Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
 
 MuMMI connects biological models of the membrane-protein system on two different scales:
 
 1. A macro model based on the classical approximation theory for liquids in which 300 proteins (Modeled as single-particle beads) move around on a 1x1 &mu;m2 cross section of a perfectly flat (2D) plasma membrane.
 
 2. A micro model that uses Martini coarse-grained (CG) molecular dynamics (MD) simulations to model a 30nm x 30nm “patch” of the macro model that necessarily contains at least one RAS protein.
-
 
 
 ![MuMMI Overview](Images/mummi_overview.png)
@@ -31,7 +30,7 @@ The workflow managers manages the state and execution of the framework, includin
     
 2) **Selection of patches using ML**: patches are then passed to a pre-trained ML model (a deep neural network) that is used for online inference to evaluate patches for their configurational relevance, ranking all candidate patches correspondingly, using the top-ranked candidates to steer the target multiscale simulation toward CG simulations of scientific interest
   
-    a) As new patches are generated, they are analyzed for their "importance" in real-time and are dynamically ranked in memory by this metric
+    a) As new patches are generated, they are analyzed for their "importance" in real-time and are dynamically ranked in memory by this metric (using DynIm)
     
     b) This queue of patches is truncated
     
@@ -116,7 +115,7 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 17) HMM analysis to determine orientational states of the protein
       a) They found RAS is generally in two metastable states in the macro model and three states in the micro model
 18) HPO and data augmentation (rotations) on the VAE model to work for the data for the particular biological system
-19 Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
+19) Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
 
 ### User Community:
