@@ -13,6 +13,8 @@ MuMMI connects biological models of the membrane-protein system on two different
 
 ![MuMMI Overview](Images/mummi_overview.png)
 
+**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (DDFT model) with an overlaid MD simulations of RAS particles. 30 x nm<sup>2</sup> patches are extracted from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and are simulated at the CG MD level. Each patch is run concurrently occupying available resources as much as possible.
+
 
 ### Software workflow:
 
@@ -84,6 +86,7 @@ version of it is used for the micro model CG simulations utilizing the Martini f
 
 ![MuMMI Components](Images/mummi_component_scheme.png)
 
+**Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. Data resulting from the macro scale simulation is analyzed by ML, and interesting subregions are simulated at the micro scale. CG simulations are analyzed in situ and used to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of teh software components using in-memory and on-disk communication. Modules in orange are the core, specially-developed components of the MuMMI framework, and other colors represent external software extended for MuMMI.  
 
 ### Requirements for MuMMI:
 
