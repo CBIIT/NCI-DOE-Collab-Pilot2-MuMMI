@@ -54,9 +54,9 @@ The workflow managers manages the state and execution of the framework, includin
     
     b) The filesystem is used for this (as opposed to memory), posing scalability challenges
     
-    c) Macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates PMFs using the OZ and HNC equations
+    c) Macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates Potential Mean Forces (PMFs) using the Ornstein-Zernike(OZ) and Hypernetted Chain closure(HNC) equations
     
-6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, FS failures, etc.
+6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, File System (FS) failures, etc.
     
     a) Failed jobs are automatically restarted at the last available checkpoint
     
@@ -72,12 +72,11 @@ The workflow managers manages the state and execution of the framework, includin
 
 2) **Flux**:is the resource manager used for MuMMI that allows the workflow manager to break up the allocated nodes in custom, optimized ways. It is designed to be configured and run directly by the user inside of allocated jobs after they are optimally placed on the nodes by the scheduler. Flux assigns the jobs picked out in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. [GitHub Link](https://flux-framework.github.io/)
 
-3) **ddcMD**: It is LLNL’s own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc. ddcMD is used in by MuMMI in two ways: (1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and (2) a customized GPU
-version of it is used for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
+3) **ddcMD**: It is Lawrence Livermore National Laboratory's (LLNL’s) own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc.  MuMMI uses ddcMD in two ways: (1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and (2) a customized GPU (graphics processing unit) version of it is used for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
 
 4) **GridSim2D/Moose**: This is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model, the other part of which is implemented using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. [GitHub Link](??)
 
-5) **DataBroker(DBR)**: was investigated for improving data management and I/O operations and allowing fast data storage and retrieval with database-level fault tolerance. [GitHub Link](https://github.com/LLNL/pytaridx)
+5) **DataBroker(DBR)**: was investigated for improving data management and I/O (Input/output) operations and allowing fast data storage and retrieval with database-level fault tolerance. [GitHub Link](https://github.com/LLNL/pytaridx)
 
 6) **DynIm** is the dynamic importance sampling software that seems to interface with the MuMMI workflow manager (for running inference). [GitHub Link](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm)
  
@@ -117,7 +116,7 @@ version of it is used for the micro model CG simulations utilizing the Martini f
       e) state change rates for RAS
 17) HMM analysis to determine orientational states of the protein
       a) They found RAS is generally in two metastable states in the macro model and three states in the micro model
-18) HPO and data augmentation (rotations) on the VAE model to work for the data for the particular biological system
+18) Hyperparameter optimization (HPO) and data augmentation (rotations) on the variational autoencoder (VAE) model to work for the data for the particular biological system
 19) Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
 
