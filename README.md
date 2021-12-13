@@ -48,9 +48,9 @@ The WM manages the state and execution of the framework, including:
     
     3) The WM allows staggering scheduling of new jobs to reduce the load on the underlying scheduler, which is useful when executing large simulations on several thousands of nodes.
   
-5) **Feedback to the macro model from the micro model**: The WM updates the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in situ analysis, gathering these metrics through the filesystem, reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting them to the free-energy functionals needed for the macro model.
+5) **Feedback to the macro model from the micro model**: The WM updates the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in-situ analysis, gathering these metrics through the filesystem, reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting them to the free-energy functionals needed for the macro model.
 
-    1) The data collected for generating feedback is from the results of the in situ analysis.
+    1) The data collected for generating feedback is from the results of the in-situ analysis.
     
     2) MuMMI uses the filesystem for this (as opposed to memory), posing scalability challenges.
     
@@ -68,7 +68,7 @@ The WM manages the state and execution of the framework, including:
 ## Suite Components
 
 
-1) **Maestro Workflow Conductor**: This component is a Python-based WM that MuMMI uses to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track the CG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. For more information, refer to [Maestro on GitHub](https://github.com/LLNL/maestrowf).
+1) **Maestro Workflow Conductor**: This component is a Python-based WM that MuMMI uses to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track the CG simulations on the important patches, and run the in-situ analysis. It interfaces with Flux in the backend. For more information, refer to [Maestro on GitHub](https://github.com/LLNL/maestrowf).
 
 2) **Flux**: This component is the resource manager that MuMMI uses to allow the WM to break up the allocated nodes in custom, optimized ways. You can configure and run it inside of allocated jobs after the scheduler optimally places them on the nodes. Flux assigns the jobs selected in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow the WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. For more information, refer to [Flux on GitHub](https://flux-framework.github.io/).
 
@@ -87,7 +87,7 @@ The WM manages the state and execution of the framework, including:
 
 ![MuMMI Components](Images/mummi_component_scheme.png)
 
-**Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. Data resulting from the macro scale simulation is analyzed by ML, and interesting subregions are simulated at the micro scale. CG simulations are analyzed in situ and used to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of teh software components using in-memory and on-disk communication. Modules in orange are the core, specially-developed components of the MuMMI framework, and other colors represent external software extended for MuMMI.  
+**Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. MuMMI uses ML to analyze data from the macro scale simulation, and simulates interesting subregions at the micro scale. MuMMI analyzes CG simulations in situ and uses them to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of the software components using in-memory and on-disk communication. The core, specially-developed components of the MuMMI framework are the workflow, ML, Maestro, CG analysis, and (TBD). Other components in the diagram represent external software extended for MuMMI.  
 
 ## Requirements for MuMMI
 
