@@ -1,8 +1,8 @@
-# NCI-DOE-Collab-Pilot2-MuMMI
+# Multiscale Machine-learned Modeling Infrastructure
 
 ## Description:
 
-The Pilot 2 team developed the Multiscale Machine-learned Modeling Infrastructure (MuMMI) methodology to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. The Pilot 2 team applied MuMMI to a different biological system consisting of a new lipid bilayer with a new type of protein embedded.
+The Pilot 2 team developed the Multiscale Machine-learned Modeling Infrastructure (MuMMI) methodology to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI connects a macro model of the system to a micro model using “dynamic importance sampling”, based on machine learning (ML), implementing the workflow on world-class supercomputing resources. The Pilot 2 team also applied MuMMI to a different biological system consisting of a new lipid bilayer with a new type of protein embedded.
 
 MuMMI connects biological models of the membrane-protein system on two different scales:
 
@@ -13,34 +13,34 @@ MuMMI connects biological models of the membrane-protein system on two different
 
 ![MuMMI Overview](Images/mummi_overview.png)
 
-**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory (DDFT) model) with an overlaid MD simulations of RAS particles. MuMMI extracts 30 x nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulates them at the CG MD level. MuMMI runs each patch concurrently occupying available resources as much as possible.
+**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory (DDFT) model) with an overlaid MD simulation of RAS particles. MuMMI extracts 30 x 30 nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulates them at the CG MD level. MuMMI runs each selected patch concurrently occupying available resources as much as possible.
 
 
 ## Software workflow:
 
-The Pilot 2 team wrote the MuMMI workflow manager (WM) in Python. The WM uses a minimum of five nodes to run. The WM controls the entire workflow via a configuration file with information on the machine requirement and frequencies of tasks. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
+The Pilot 2 team wrote the MuMMI workflow manager (WM) in Python. The WM uses at least five nodes to run. The WM controls the entire workflow via a configuration file with information on the machine requirement and frequencies of tasks. The workflow interfaces with Mastero that assists in query job status and schedules new jobs when needed.
 
-The workflow managers manages the state and execution of the framework, including:
+The WM manages the state and execution of the framework, including:
 
-1) **Generation of patches**: continuous polling of the running macro model simulation and generates patches from the incoming macro model snapshots (saved to disk) of the data resulting from the macro model simulation
+1) **Generation of patches**: The WM continuously polls the running macro model simulation and generates patches from the incoming macro model snapshots (saved to disk) of the data resulting from the macro model simulation
 
     1) MuMMI generates several patches (spatial regions of scientific interest) per snapshot, which are binary data files WM processes the snapshots as soon as MuMMI creates them
    
     2) At full scale, MuMMI generates one snapshot every 150 seconds and each snapshot contains 300 patches
     
-    3) MuMMI stores patches as pickle objects in a tar archive file
+    3) MuMMI stores patches as pickle objects in a TAR archive file
     
 2) **Selection of patches using ML**: The WM then passes patches to a pre-trained ML model (a deep neural network). MuMMMI uses this model for online inference to evaluate patches for their configurational relevance, ranking all candidate patches correspondingly, using the top-ranked candidates to steer the target multiscale simulation toward CG simulations of scientific interest
   
-    1) As MuMMI generates new patches, MuMMI analyzes them for their "importance" in real-time. MuMMI uses this metric (and DynIm) to dynamical rank them in memory
+    1) As MuMMI generates new patches, MuMMI uses dynamic importance sampling software to analyze them for their "importance" in real-time and use this metric to dynamically rank them in memory
     
     2) The WM truncates this queue of patches
     
     3) The importance of a patch cannot increase over time
     
-3) **Tracking system-wide computational resources**: The WM does this indirectly by tracking the tasks currently running and their known allocation size, using Maestro to query thy status of running jobs (previously started by the WM) from which the WM calculates available resources (with and without GPU)
+3) **Tracking system-wide computational resources**: The WM does this indirectly by tracking the tasks currently running and their known allocation size, using Maestro to query the status of running jobs (previously started by the WM) from which the WM calculates available resources (with and without a graphics processing unit, GPU)
 
-4) **Management of CG simulations**: monitoring available resources, starting new simulation tasks when resources become available (or during the loading phase of the workflow), monitoring running tasks (both CG setup and simulations), and restarting any jobs that fail due to hardware issues or simulation instability, providing extensive checkpointing and restoring capabilities
+4) **Management of CG simulations**: The WM monitors available resources, starting new simulation tasks when resources become available (or during the loading phase of the workflow), monitoring running tasks (both CG setup and simulations), and restarting any jobs that fail due to hardware issues or simulation instability, providing extensive checkpointing and restoring capabilities
 
     1) The WM selects patches from the priority queue to start new CG setup jobs based on need and to match available resources
     
@@ -48,19 +48,19 @@ The workflow managers manages the state and execution of the framework, includin
     
     3) The WM allows staggering scheduling of new jobs to reduce the load on the underlying scheduler, which is useful when executing large simulations on several thousands of nodes.
   
-5) **Feedback to the macro model from the micro model**: updating the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in situ analysis, gathering these metrics through the filesystem reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting to the free-energy functionals needed for the macro model.
+5) **Feedback to the macro model from the micro model**: The WM updates the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in situ analysis, gathering these metrics through the filesystem reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting them to the free-energy functionals needed for the macro model.
 
-    1) To be clear, the data collected for generating feedback is from the results of the in situ analysis
+    1) The data collected for generating feedback is from the results of the in situ analysis
     
     2) MuMMI uses the filesystem for this (as opposed to memory), posing scalability challenges
     
-    3) Macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates Potential Mean Forces (PMFs) using the Ornstein-Zernike(OZ) and Hypernetted Chain closure(HNC) equations
+    3) The macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates Potential of Mean Force using the Ornstein-Zernike and Hypernetted Chain closure equations
     
-6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, File System (FS) failures, etc.
+6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, File System failures, and so on.
     
     1) The WM automatically restarts failed jobs at the last available checkpoint
     
-    2) The WM duplicates all status files, in case the control data corrupts
+    2) The WM duplicates all status files, in case of corruption in the control data
     
     3) The WM uses several checkpoint files to save the current state of the simulation in a coordinated manner, which you can use to restore the simulation, potentially with different configurations or even on a different machine
 
@@ -68,21 +68,21 @@ The workflow managers manages the state and execution of the framework, includin
 ## Suite Components:
 
 
-1) **Maestro Workflow Conductor**: It is a Python-based workflow manager that MuMMI uses to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track theCG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. [GitHub Link](https://github.com/LLNL/maestrowf)
+1) **Maestro Workflow Conductor**: This component is a Python-based WM that MuMMI uses to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track the CG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. For more information, refer to [Maestro on GitHub](https://github.com/LLNL/maestrowf).
 
-2) **Flux**:is the resource manager that MuMMI uses to allow the workflow manager to break up the allocated nodes in custom, optimized ways. You can configure and run it inside of allocated jobs after the scheduler optimally places them on the nodes. Flux assigns the jobs picked out in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. [GitHub Link](https://flux-framework.github.io/)
+2) **Flux**: This component is the resource manager that MuMMI uses to allow the WM to break up the allocated nodes in custom, optimized ways. You can configure and run it inside of allocated jobs after the scheduler optimally places them on the nodes. Flux assigns the jobs selected in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow the WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. For more information, refer to [Flux on GitHub](https://flux-framework.github.io/).
 
-3) **ddcMD**: It is Lawrence Livermore National Laboratory's (LLNL’s) own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc.  MuMMI uses ddcMD in two ways: 
+3) **ddcMD**: This component is Lawrence Livermore National Laboratory's own GPU-accelerated MD software that uses the Martini force field and it is faster than competitors such as AMBER, GROMACS, and so on.  MuMMI uses ddcMD in two ways: 
    1) MuMMI uses a CPU-only version of it to integrate protein equations of motion in the macro model and 
-   2) MuMMI uses a customized GPU (graphics processing unit) version of it for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
+   2) MuMMI uses a customized GPU version of it for the micro model CG simulations using the Martini force field. For more information, refer to [ddcMD_on GitHub](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_on GitHub](https://github/com/LLNL/ddcmdconverter).
 
-4) **GridSim2D/Moose**: This is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. [GitHub Link](??)
+4) **GridSim2D/Moose**: This component is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. For more information, refer to (link TBD) [GridSim2D/Moose on GitHub](??).
 
-5) **DataBroker(DBR)**: The Pilot 2 team investigated this component for improving data management and I/O (Input/output) operations and allowing fast data storage and retrieval with database-level fault tolerance. [GitHub Link](https://github.com/LLNL/pytaridx)
+5) **Data Broker**: The Pilot 2 team investigated this component for improving data management, improving Input/output operations, and allowing fast data storage and retrieval with database-level fault tolerance. For more information, refer to [pytaridx on GitHub](https://github.com/LLNL/pytaridx).
 
-6) **DynIm** is the dynamic importance sampling software that seems to interface with the MuMMI workflow manager (for running inference). [GitHub Link](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm)
+6) **DynIm**: This component is the dynamic importance sampling software that seems to interface with the MuMMI WM (for running inference). For more information, refer to [DynIm on GitHub](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm).
  
-7) **MemSurfer** is an analysis tool that is not part of the MuMMI workflow, is an efficient and versatile tool to compute and analyze membrane surfaces found in a wide variety of large-scale molecular simulations. [GitHub Link](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-MemSurfer)
+7) **MemSurfer**: This component is an analysis tool that is not part of the MuMMI workflow. MemSurfer is an efficient and versatile tool to compute and analyze membrane surfaces found in a wide variety of large-scale molecular simulations. For more information, refer to [MemSurfer on GitHub](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-MemSurfer).
 
 
 ![MuMMI Components](Images/mummi_component_scheme.png)
@@ -94,25 +94,25 @@ The workflow managers manages the state and execution of the framework, includin
 1) Initial macro model parameters (from CG training simulations)
    1) MuMMI takes radial distribution functions (RDFs) from analysis of the Martini MD CG force field parameters and converts them to free-energy functionals that the macro model needs
    2) Also needed from the CG simulations: lipid self-diffusion coefficients to get the mobility parameters for the macro model; potentials of mean force; direct correlation function; self-diffusion coefficients; protein diffusivity; initial protein conformations (this requires 30 CG MD simulations of standard patch size)
-2) Ensure the CG (and macro) simulations are stable
+2) Stable CG (and macro) simulations
 3) Pre-training of model for encoding lipid configurations
 4) Protein density on membrane
 5) Initial library of protein conformations to sample from during CG simulations
 6) Working Martini parameter set, structures of the proteins and lipids
-7) Other physical parameters such as CG setup pull-protein-to-membrane speed, cut-off radii, etc.
-8) Optimization of analysis routines so that using 3 CPU cores for each simulation it can keep up with the frequency of incoming frames from ddcMD
+7) Other physical parameters such as CG setup pull-protein-to-membrane speed, cut-off radii, and so on
+8) Optimization of analysis routines so that using three CPU cores for each simulation it can keep up with the frequency of incoming frames from ddcMD
 9) Crystal structure of active proteins in the lipid membrane context
 10) Required experimental measurements
 11) Biologically relevant membrane compositions and test of its stability in both models
-12) Preparation of the lipid bilayer, e.g., lipid spacing in each leaflet
-13) Modeled and optimized (minimized + equilibrated) protein
+12) Preparation of the lipid bilayer, such as lipid spacing in each leaflet
+13) Modeled and optimized (minimized and equilibrated) protein
 14) CG beads version of the protein structure calculated using martinize.py
 15) CG-modeled/parametrized protein with all sanity checks
-16) "Extensive sets of CG simulations that
-     1) validate the behavior of mixed lipid systems with and without RAS, as well as to 
-     2) provide input parameters for the macro model" resulting in "preliminary CG simulation data" or "CG MD Martini parameterization simulations" or "training data"
+16) "Extensive sets of CG simulations that perform the following actions:
+     1) validate the behavior of mixed lipid systems with and without RAS 
+     2) provide input parameters for the macro model" resulting in "preliminary CG simulation data", "CG MD Martini parameterization simulations", or "training data"
     
-    These result in these parameters to the macro model:
+    These result in the following parameters to the macro model:
       1) diffusion coefficients for the different lipids
       2) diffusion coefficients for RAS in the two different orientational states
       3) lipid-lipid correlation functions
@@ -120,19 +120,19 @@ The workflow managers manages the state and execution of the framework, includin
       5) state change rates for RAS
 17) HMM analysis to determine orientational states of the protein
       1) They found RAS is generally in two metastable states in the macro model and three states in the micro model
-18) Hyperparameter optimization (HPO) and data augmentation (rotations) on the variational autoencoder (VAE) model to work for the data for the particular biological system
-19) Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
+18) Hyperparameter optimization and data augmentation (rotations) on the variational autoencoder model to work for the data for the particular biological system
+19) MemSurfer to perform basic analysis of membrane simulations (such as local areal densities) in preparation for creating a macro model from CG MD data
 
 
 ## User Community:
 Experienced data scientists, computational scientists, artificial intelligence researchers, clinical researchers, and all researchers dealing with sensitive data assets.
 
 ## Reference:
-Refer to this [publication](https://www.researchsquare.com/article/rs-50842/v1) for more details.
+For more details, refer to this [publication](https://www.researchsquare.com/article/rs-50842/v1).
 
 ## License:
 
-The Pilot 2 team licensed this work under a CC BY 4.0 License. 
+The Pilot 2 team released MuMMI under a Creative Commons BY 4.0 License. 
 
 ## Authors: 
 | Name | Organization | ID |
@@ -168,7 +168,7 @@ The Pilot 2 team licensed this work under a CC BY 4.0 License.
 | Shusen Liu | Lawrence Livermore National Laboratory | (Not Available) | 
 | Brian Van Essen | Computing Directorate, Lawrence Livermore National Laboratory, Livermore, CA. | (Not Available) | 
 | Arthur Voter | Theoretical Division, Los Alamos National Laboratory, Los Alamos, NM. | (Not Available) | 
-| Arvind Ramanathan | Computing, Environment & Life Sciences (CELS) Directorate, Argonne National Laboratory, Lemont, IL. | (Not Available) | 
+| Arvind Ramanathan | Computing, Environment, and Life Sciences (CELS) Directorate, Argonne National Laboratory, Lemont, IL. | (Not Available) | 
 | Nicolas Hengartner | Los Alamos National Laboratory | (Not Available) | 
 | Dhirendra Simanshu | RAS Initiative, The Cancer Research Technology Program, Frederick National Laboratory, Frederick, MD. | (Not Available) | 
 | Andrew Stephen | RAS Initiative, The Cancer Research Technology Program, Frederick National Laboratory, Frederick, MD. | (Not Available) | 
