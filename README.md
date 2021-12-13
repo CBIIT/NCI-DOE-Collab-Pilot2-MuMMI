@@ -1,6 +1,6 @@
 # NCI-DOE-Collab-Pilot2-MuMMI
 
-### Description:
+## Description:
 
 Multiscale Machine-learned Modeling Infrastructure (MuMMI) is a methodology that the Pilot 2 team has developed to study the interaction of active KRAS with the plasma membrane (and related phenomena) on very large temporal and spatial scales. To achieve this, MuMMI connects a macro model of the system to a micro model using machine-learning-based “dynamic importance sampling” implementing the workflow on world-class supercomputing resources. MuMMI was applied to a different biological system consisting of a new lipid bilayer into which a new type of protein is embedded.
 
@@ -16,7 +16,7 @@ MuMMI connects biological models of the membrane-protein system on two different
 **Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory (DDFT) model) with an overlaid MD simulations of RAS particles. 30 x nm<sup>2</sup> patches are extracted from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and are simulated at the CG MD level. Each patch is run concurrently occupying available resources as much as possible.
 
 
-### Software workflow:
+## Software workflow:
 
 MuMMI workflow manager (WM) is written in Python and uses a minimum of five nodes to run. The entire workflow is controlled via a configuration file with information on the machine requirement and frequencies of the tasks to be run. The workflow interfaces with Mastero that assits in query job status and to schedule new jobs when needed.
 
@@ -65,7 +65,7 @@ The workflow managers manages the state and execution of the framework, includin
     c) The WM uses several checkpoint files to save the current state of the simulation in a coordinated manner, which can be used to restore the simulation,            potentially with different configurations or even on a different machine
 
 
-### Suite Components:
+## Suite Components:
 
 
 1) **Maestro Workflow Conductor**: It is a Python-based workflow manager used in MuMMI that is used to run the macro model on partitions of the nodes, run inference on lipid patches in order to determine their importance, instantiate the CG setup jobs, spawn and track theCG simulations on the important patches, and run the in situ analysis. It interfaces with Flux in the backend. [GitHub Link](https://github.com/LLNL/maestrowf)
@@ -87,7 +87,7 @@ The workflow managers manages the state and execution of the framework, includin
 
 **Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. Data resulting from the macro scale simulation is analyzed by ML, and interesting subregions are simulated at the micro scale. CG simulations are analyzed in situ and used to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of teh software components using in-memory and on-disk communication. Modules in orange are the core, specially-developed components of the MuMMI framework, and other colors represent external software extended for MuMMI.  
 
-### Requirements for MuMMI:
+## Requirements for MuMMI:
 
 1) Initial macro model parameters (from CG training simulations)
   a) Radial distribution functions (RDFs) are taken from analysis of the Martini MD CG force field parameters and converted to free-energy functionals that are      needed for the macro model
@@ -120,17 +120,17 @@ The workflow managers manages the state and execution of the framework, includin
 19) Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
 
-### User Community:
+## User Community:
 Experienced data scientists, computational scientists, artificial intelligence researchers, clinical researchers, and all researchers dealing with sensitive data assets.
 
-### Reference:
+## Reference:
 Refer to this [publication](https://www.researchsquare.com/article/rs-50842/v1) for more details.
 
-### License:
+## License:
 
 This work is licensed under a CC BY 4.0 License. 
 
-### Authors: 
+## Authors: 
 Helgi Ingolfsson
 Lawrence Livermore National Laboratory
 ORCiD: https://orcid.org/0000-0002-7613-9143
