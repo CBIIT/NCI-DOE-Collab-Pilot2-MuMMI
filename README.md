@@ -24,45 +24,45 @@ The workflow managers manages the state and execution of the framework, includin
 
 1) **Generation of patches**: continuous polling of the running macro model simulation and generates patches from the incoming macro model snapshots (saved to disk) of the data resulting from the macro model simulation
 
-    a) Several patches (spatial regions of scientific interest) are generated per snapshot, which are binary data files WM processes the snapshots as soon as            they are created
+    1) Several patches (spatial regions of scientific interest) are generated per snapshot, which are binary data files WM processes the snapshots as soon as            they are created
    
-    b) At full scale, one snapshot is generated every 150 seconds and contains 300 patches
+    2) At full scale, one snapshot is generated every 150 seconds and contains 300 patches
     
-    c) Patches are stored as pickle objects in a tar archive file
+    3) Patches are stored as pickle objects in a tar archive file
     
 2) **Selection of patches using ML**: patches are then passed to a pre-trained ML model (a deep neural network) that is used for online inference to evaluate patches for their configurational relevance, ranking all candidate patches correspondingly, using the top-ranked candidates to steer the target multiscale simulation toward CG simulations of scientific interest
   
-    a) As new patches are generated, they are analyzed for their "importance" in real-time and are dynamically ranked in memory by this metric (using DynIm)
+    1) As new patches are generated, they are analyzed for their "importance" in real-time and are dynamically ranked in memory by this metric (using DynIm)
     
-    b) This queue of patches is truncated
+    2) This queue of patches is truncated
     
-    c) The importance of a patch cannot increase over time
+    3) The importance of a patch cannot increase over time
     
 3) **Tracking system-wide computational resources**: This is done indirectly by tracking the tasks currently running and their known allocation size, using Maestro to query thy status of running jobs (previously started by the WM) from which the available resources (with and without GPU) are calculated
 
 4) **Management of CG simulations**: monitoring available resources, starting new simulation tasks when resources become available (or during the loading phase of the workflow), monitoring running tasks (both CG setup and simulations), and restarting any jobs that fail due to hardware issues or simulation instability, providing extensive checkpointing and restoring capabilities
 
-    a) Patches are selected from the priority queue to start new CG setup jobs based on need and to match available resources
+    1) Patches are selected from the priority queue to start new CG setup jobs based on need and to match available resources
     
-    b) Completed CG setup systems are selected to run as new CG simulations
+    2) Completed CG setup systems are selected to run as new CG simulations
     
-    c) The WM allows staggering scheduling of new jobs to reduce the load on the underlying scheduler, which is useful when executing large simulations on              several thousands of nodes.
+    3) The WM allows staggering scheduling of new jobs to reduce the load on the underlying scheduler, which is useful when executing large simulations on              several thousands of nodes.
   
 5) **Feedback to the macro model from the micro model**: updating the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in situ analysis, gathering these metrics through the filesystem reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting to the free-energy functionals needed for the macro model.
 
-    a) To be clear, the data collected for generating feedback is from the results of the in situ analysis
+    1) To be clear, the data collected for generating feedback is from the results of the in situ analysis
     
-    b) The filesystem is used for this (as opposed to memory), posing scalability challenges
+    2) The filesystem is used for this (as opposed to memory), posing scalability challenges
     
-    c) Macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates Potential Mean Forces (PMFs) using the Ornstein-Zernike(OZ) and Hypernetted Chain closure(HNC) equations
+    3) Macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates Potential Mean Forces (PMFs) using the Ornstein-Zernike(OZ) and Hypernetted Chain closure(HNC) equations
     
 6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, File System (FS) failures, etc.
     
-    a) Failed jobs are automatically restarted at the last available checkpoint
+    1) Failed jobs are automatically restarted at the last available checkpoint
     
-    b) In case the control data corrupts, all status files are duplicated
+    2) In case the control data corrupts, all status files are duplicated
     
-    c) The WM uses several checkpoint files to save the current state of the simulation in a coordinated manner, which can be used to restore the simulation,            potentially with different configurations or even on a different machine
+    3) The WM uses several checkpoint files to save the current state of the simulation in a coordinated manner, which can be used to restore the simulation,            potentially with different configurations or even on a different machine
 
 
 ## Suite Components:
@@ -72,7 +72,9 @@ The workflow managers manages the state and execution of the framework, includin
 
 2) **Flux**:is the resource manager used for MuMMI that allows the workflow manager to break up the allocated nodes in custom, optimized ways. It is designed to be configured and run directly by the user inside of allocated jobs after they are optimally placed on the nodes by the scheduler. Flux assigns the jobs picked out in Maestro to the backend scheduler. MuMMI uses a Maestro plugin for Flux to allow WM’s interface to remain virtually independent of the ongoing development within Flux and to allow the option to switch schedulers in the future. [GitHub Link](https://flux-framework.github.io/)
 
-3) **ddcMD**: It is Lawrence Livermore National Laboratory's (LLNL’s) own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc.  MuMMI uses ddcMD in two ways: (1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and (2) a customized GPU (graphics processing unit) version of it is used for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
+3) **ddcMD**: It is Lawrence Livermore National Laboratory's (LLNL’s) own GPU-accelerated MD software that utilizes the Martini force field and it is faster than competitors such as AMBER, GROMACS, etc.  MuMMI uses ddcMD in two ways: 
+   1) a CPU-only version of it is used to integrate protein equations of motion in the macro model and 
+   2) a customized GPU (graphics processing unit) version of it is used for the micro model CG simulations utilizing the Martini force field. [ddcMD_GitHub Link](https://github/com/LLNL/ddcMD) and [ddcMD-utilities_GitHub Link](https://github/com/LLNL/ddcmdconverter)
 
 4) **GridSim2D/Moose**: This is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model, the other part of which is implemented using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. [GitHub Link](??)
 
@@ -90,8 +92,8 @@ The workflow managers manages the state and execution of the framework, includin
 ## Requirements for MuMMI:
 
 1) Initial macro model parameters (from CG training simulations)
-  a) Radial distribution functions (RDFs) are taken from analysis of the Martini MD CG force field parameters and converted to free-energy functionals that are      needed for the macro model
-  b) Also needed from the CG simulations: lipid self-diffusion coefficients to get the mobility parameters for the macro model; potentials of mean force; direct    correlation function; self-diffusion coefficients; protein diffusivity; initial protein conformations (this requires 30 CG MD simulations of standard patch      size)
+   1) Radial distribution functions (RDFs) are taken from analysis of the Martini MD CG force field parameters and converted to free-energy functionals that are needed for the macro model
+   2) Also needed from the CG simulations: lipid self-diffusion coefficients to get the mobility parameters for the macro model; potentials of mean force; direct correlation function; self-diffusion coefficients; protein diffusivity; initial protein conformations (this requires 30 CG MD simulations of standard patch size)
 2) Ensure the CG (and macro) simulations are stable
 3) Pre-training of model for encoding lipid configurations
 4) Protein density on membrane
@@ -106,16 +108,18 @@ The workflow managers manages the state and execution of the framework, includin
 13) Modeled and optimized (minimized + equilibrated) protein
 14) CG beads version of the protein structure calculated using martinize.py
 15) CG-modeled/parametrized protein with all sanity checks
-16) "Extensive sets of CG simulations were carried out in order to validate the behavior of mixed lipid systems with and without RAS, as well as to provide input     parameters for the macro model" resulting in "preliminary CG simulation data" or "CG MD Martini parameterization simulations" or "training data"
+16) "Extensive sets of CG simulations were carried out in order to 
+     1) validate the behavior of mixed lipid systems with and without RAS, as well as to 
+     2) provide input parameters for the macro model" resulting in "preliminary CG simulation data" or "CG MD Martini parameterization simulations" or "training data"
     
     These result in these parameters to the macro model:
-      a) diffusion coefficients for the different lipids
-      b) diffusion coefficients for RAS in the two different orientational states
-      c) lipid-lipid correlation functions
-      d) potentials for lipid-RAS and RAS-RAS interactions
-      e) state change rates for RAS
+      1) diffusion coefficients for the different lipids
+      2) diffusion coefficients for RAS in the two different orientational states
+      3) lipid-lipid correlation functions
+      4) potentials for lipid-RAS and RAS-RAS interactions
+      5) state change rates for RAS
 17) HMM analysis to determine orientational states of the protein
-      a) They found RAS is generally in two metastable states in the macro model and three states in the micro model
+      1) They found RAS is generally in two metastable states in the macro model and three states in the micro model
 18) Hyperparameter optimization (HPO) and data augmentation (rotations) on the variational autoencoder (VAE) model to work for the data for the particular biological system
 19) Use MemSurfer to perform basic analysis of membrane simulations (e.g., local areal densities) in preparation for creating a macro model from CG MD data
 
