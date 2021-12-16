@@ -76,7 +76,7 @@ The WM manages the state and execution of the framework, including:
    1) MuMMI uses a CPU-only version of it to integrate protein equations of motion in the macro model and 
    2) MuMMI uses a customized GPU version of it for the micro model CG simulations using the Martini force field. 
 
-   For more information, refer to [ddcMD on GitHub](https://github/com/LLNL/ddcMD) and [ddcMD-utilities on GitHub](https://github/com/LLNL/ddcmdconverter).
+   For more information, refer to [ddcMD on GitHub](https://github.com/LLNL/ddcMD) and [ddcMD-utilities on GitHub](https://github.com/LLNL/ddcmdconverter).
 
 4) **GridSim2D/Moose**: This component is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. For more information, refer to (link TBD) [GridSim2D/Moose on GitHub](??).
 
