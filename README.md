@@ -48,15 +48,15 @@ The WM manages the state and execution of the framework, including:
     
     3) The WM allows staggering scheduling of new jobs to reduce the load on the underlying scheduler, which is useful when executing large simulations on several thousands of nodes.
   
-5) **Feedback to the macro model from the micro model**: The WM updates the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in-situ analysis, gathering these metrics through the filesystem, reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting them to the free-energy functionals needed for the macro model.
+5) **Feedback to the macro model from the micro model**: The WM updates the macro model parameters, periodically (every two hours) collecting the accumulated RAS-lipid radial distribution functions (RDFs) from each CG simulation via data provided by the in-situ analysis, gathering these metrics through the General Parallel File System (GPFS), reading the RDFs for each CG simulation, aggregating them through appropriate weighting, and converting them to the free-energy functionals needed for the macro model.
 
     1) The data collected for generating feedback is from the results of the in-situ analysis.
     
-    2) MuMMI uses the filesystem for this (as opposed to memory), posing scalability challenges.
+    2) MuMMI uses the file system for this (as opposed to memory), posing scalability challenges.
     
     3) The macro model periodically reads in improved RDFs accumulated by the workflow via CG simulations and calculates potential of mean force using the Ornstein-Zernike and hypernetted chain closure equations.
     
-6) **Checkpointing and restarting**: WM monitors all running jobs for dead jobs due to node failures, file corruption, filesystem failures, and so on.
+6) **Checkpointing and restarting**: The WM monitors the submitted jobs to identify whether any jobs are dead because of node failures, file system failures, file corruption, and so on.
     
     1) The WM automatically restarts failed jobs at the last available checkpoint.
     
@@ -80,9 +80,9 @@ The WM manages the state and execution of the framework, including:
 
 4) **GridSim2D/Moose**: This component is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. For more information, refer to (link TBD) [GridSim2D/Moose on GitHub](??).
 
-5) **Data Broker**: The Pilot 2 team investigated this component for improving data management, improving input/output operations, and allowing fast data storage and retrieval with database-level fault tolerance. For more information, refer to [pytaridx on GitHub](https://github.com/LLNL/pytaridx).
+5) **Data Broker**: This component improves data management, improves input/output operations, and allows fast data storage and retrieval with database-level fault tolerance. For more information, refer to [pytaridx on GitHub](https://github.com/LLNL/pytaridx).
 
-6) **DynIm**: This component is the dynamic importance sampling software that seems to interface with the MuMMI WM (for running inference). For more information, refer to [DynIm on GitHub](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm).
+6) **DynIm**: This component is the dynamic importance sampling software that interfaces with the MuMMI WM (for running inference). For more information, refer to [DynIm on GitHub](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-DynIm).
  
 7) **MemSurfer**: This component is an analysis tool that is not part of the MuMMI workflow. MemSurfer is an efficient and versatile tool to compute and analyze membrane surfaces found in a wide variety of large-scale molecular simulations. For more information, refer to [MemSurfer on GitHub](https://github.com/CBIIT/NCI-DOE-Collab-Pilot2-MemSurfer).
 
@@ -95,17 +95,23 @@ The WM manages the state and execution of the framework, including:
 
 1) Initial macro model parameters (from CG training simulations):
    1) MuMMI takes radial distribution functions (RDFs) from analysis of the Martini MD CG force field parameters and converts them to free-energy functionals that the macro model needs.
-   2) Also needed from the CG simulations: lipid self-diffusion coefficients to get the mobility parameters for the macro model; potentials of mean force; direct correlation function; self-diffusion coefficients; protein diffusivity; initial protein conformations (this requires 30 CG MD simulations of standard patch size).
+   2) Also needed from the CG simulations: lipid self-diffusion coefficients to get the following items:
+      - The mobility parameters for the macro model
+      - Potentials of mean force
+      - Direct correlation function
+      - Self-diffusion coefficients
+      - Protein diffusivity
+      - Initial protein conformations (These conformations require 30 CG MD simulations of standard patch size.)
 2) Stable CG (and macro) simulations.
 3) Pre-training of model for encoding lipid configurations.
 4) Protein density on membrane.
 5) Initial library of protein conformations to sample from during CG simulations.
 6) Working Martini parameter set, structures of the proteins and lipids.
 7) Other physical parameters such as CG setup pull-protein-to-membrane speed, cut-off radii, and so on.
-8) Optimization of analysis routines so that using three CPU cores for each simulation it can keep up with the frequency of incoming frames from ddcMD.
+8) Optimization of analysis routines so that, by using three CPU cores for each simulation, the MuMMI WM can keep up with the frequency of incoming frames from ddcMD.
 9) Crystal structure of active proteins in the lipid membrane context.
 10) Required experimental measurements.
-11) Biologically relevant membrane compositions and test of its stability in both models.
+11) Biologically relevant membrane compositions and test of the membrane protein's stability in both models.
 12) Preparation of the lipid bilayer, such as lipid spacing in each leaflet.
 13) Modeled and optimized (minimized and equilibrated) protein.
 14) CG beads version of the protein structure calculated using martinize.py.
@@ -114,14 +120,13 @@ The WM manages the state and execution of the framework, including:
      1) Validate the behavior of mixed lipid systems with and without RAS.
      2) Provide input parameters for the macro model resulting in preliminary CG simulation data, CG MD Martini parameterization simulations, or training data.
     
-    These result in the following parameters to the macro model:
+    These actions result in the following parameters to the macro model:
       1) Diffusion coefficients for the different lipids.
       2) Diffusion coefficients for RAS in the two different orientational states.
       3) Lipid-lipid correlation functions.
       4) Potentials for lipid-RAS and RAS-RAS interactions.
       5) State change rates for RAS.
-17) HMM analysis to determine orientational states of the protein:
-      1) They found RAS is generally in two metastable states in the macro model and three states in the micro model.
+17) Hidden Markov model (HMM) analysis to determine orientational states of the protein: The HMM analysis found RAS is generally in two metastable states in the macro model and three states in the micro model.
 18) Hyperparameter optimization and data augmentation (rotations) on the variational autoencoder model to work for the data for the particular biological system.
 19) MemSurfer to perform basic analysis of membrane simulations (such as local areal densities) in preparation for creating a macro model from CG MD data.
 
