@@ -13,7 +13,7 @@ MuMMI connects biological models of the membrane-protein system on two different
 
 ![MuMMI Overview](Images/mummi_overview.png)
 
-**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory \[DDFT\] model) with an overlaid MD simulation of RAS particles. MuMMI extracts 30 x 30 nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulates them at the CG MD level. MuMMI runs each selected patch concurrently, occupying available resources as much as possible.
+**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory \[DDFT\] model) with an overlaid MD simulation of RAS particles. The Pilot 2 team extracts 30 x 30 nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulates them at the CG MD level. MuMMI runs each selected patch concurrently, occupying available resources as much as possible.
 
 
 ## Software Workflow
