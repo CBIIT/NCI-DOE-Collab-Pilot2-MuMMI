@@ -13,7 +13,7 @@ MuMMI connects biological models of the membrane-protein system on two different
 
 ![MuMMI Overview](Images/mummi_overview.png)
 
-**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory \[DDFT\] model) with an overlaid MD simulation of RAS particles. The Pilot 2 team extracts 30 x 30 nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulates them at the CG MD level. MuMMI runs each selected patch concurrently, occupying available resources as much as possible.
+**Figure 1:** MuMMI overview. MuMMI performs massively parallel multiscale simulations using an ML-driven sampling framework. The first layer is a macro scale (Dynamic Density Functional Theory \[DDFT\] model) with an overlaid MD simulation of RAS particles. For example, the Pilot 2 team extracted 30 x 30 nm<sup>2</sup> patches from the 1 x 1 &mu;m<sup>2</sup> macro snapshots and simulated them at the CG MD level. MuMMI runs each selected patch concurrently, occupying available resources as much as possible.
 
 
 ## Software Workflow
@@ -78,7 +78,7 @@ The WM manages the state and execution of the framework, including:
 
    For more information, refer to [ddcMD on GitHub](https://github.com/LLNL/ddcMD) and [ddcMD-utilities on GitHub](https://github.com/LLNL/ddcmdconverter).
 
-4) **GridSim2D/Moose**: This component is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. For more information, refer to (link TBD) [GridSim2D/Moose on GitHub](??).
+4) **GridSim2D/Moose**: This component is the finite element software implementing the equations of motion for the lipids within the dynamic density functional theory framework that is the larger part of the macro model. MuMMI implements the other part of the macro model using a CPU-only version of ddcMD to simulate the protein beads on the lipid membrane, which interact through potentials of mean force. For more information, refer to [Moose](https://mooseframework.inl.gov/).
 
 5) **Data Broker**: This component improves data management, improves input/output operations, and allows fast data storage and retrieval with database-level fault tolerance. For more information, refer to [pytaridx on GitHub](https://github.com/LLNL/pytaridx).
 
@@ -89,7 +89,7 @@ The WM manages the state and execution of the framework, including:
 
 ![MuMMI Components](Images/mummi_component_scheme.png)
 
-**Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. MuMMI uses ML to analyze data from the macro scale simulation, and simulates interesting subregions at the micro scale. MuMMI analyzes CG simulations in situ and uses them to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of the software components using in-memory and on-disk communication. The core, specially-developed components of the MuMMI framework are the workflow, ML, Maestro, CG analysis, and (TBD). Other components in the diagram represent external software extended for MuMMI.  
+**Figure 2:** MuMMI component scheme. MuMMI couples the macro scale (DDFT and MD) model with the micro scale (CG model) using a ML-based dynamic-importance sampling framework. MuMMI uses ML to analyze data from the macro scale simulation, and simulates interesting subregions at the micro scale. MuMMI analyzes CG simulations in situ and uses them to improve the macro model via on-the-fly feedback. The central workflow uses Flux as the resource manager, as abstracted using Mastero, and coordinates with each of the software components using in-memory and on-disk communication. The core, specially-developed components of the MuMMI framework are the workflow, ML, Maestro, CG analysis, and part of CG setup. Other components in the diagram represent external software extended for MuMMI.  
 
 ## Requirements for MuMMI
 
